@@ -1,8 +1,13 @@
 # DeepBlue Rescue
 
-Capa de persistencia de una plataforma de rescate de fauna marina, construida con **Java 21**, **Spring Boot 4.1**, **Spring Data JPA**, **Hibernate**, **Flyway** y **PostgreSQL**, probada íntegramente con **Testcontainers**.
+## Integrantes
+
+- Jeremias Esteban Parra Florez
+- Aluna Soffia Perea Labastidas
 
 ## Descripción
+
+Capa de persistencia de una plataforma de rescate de fauna marina, construida con **Java 21**, **Spring Boot 4.1**, **Spring Data JPA**, **Hibernate**, **Flyway** y **PostgreSQL**, probada íntegramente con **Testcontainers**.
 
 El sistema modela el ciclo de vida de un rescate de fauna marina: un centro de rescate registra un caso, se identifica y registra al animal, se le abre un expediente médico, y especialistas con distintas áreas de experiencia le aplican tratamientos mientras el caso avanza por distintos estados de rehabilitación.
 
