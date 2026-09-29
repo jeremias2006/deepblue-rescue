@@ -50,6 +50,10 @@ public class RescueCase {
         this.rescueCenter = rescueCenter;
     }
 
+    public void changeStatus(RescueStatus status) {
+        this.status = status;
+    }
+
     public Long getId() {
         return id;
     }
