@@ -1,58 +1,50 @@
-import { useAnimal } from '../hooks/useAnimal'
-import ChangeStatus from './ChangeStatus'
+import { useState } from 'react'
+import { useRescueCases } from '../hooks/useRescueCases'
 import ErrorMessage from './ErrorMessage'
-import TreatmentForm from './TreatmentForm'
-import TreatmentList from './TreatmentList'
 
-export default function CaseDetail({ caseItem, onChanged }) {
-    const { animal, treatments, eligibility } = useAnimal(caseItem.animalCode)
+export const STATUSES = [
+    'ADMITTED',
+    'UNDER_EVALUATION',
+    'IN_REHABILITATION',
+    'READY_FOR_RELEASE',
+    'RELEASED',
+    'CLOSED',
+]
+
+export default function CaseList({ selected, onSelect }) {
+    const [status, setStatus] = useState('ADMITTED')
+    const { data, isPending, isError, error } = useRescueCases(status)
 
     return (
-        <div>
-            <section>
-                <h2>Caso {caseItem.caseCode}</h2>
-                <p>
-                    <strong>Estado:</strong> {caseItem.status} <br />
-                    <strong>Centro:</strong> {caseItem.centerCode} <br />
-                    <strong>Lugar:</strong> {caseItem.rescueLocation} <br />
-                    <strong>Fecha:</strong> {caseItem.rescueDate}
-                </p>
-            </section>
+        <aside>
+            <h2>Casos de rescate</h2>
 
-            <ChangeStatus
-                key={caseItem.caseCode}
-                caseItem={caseItem}
-                onChanged={onChanged}
-            />
+            <label>
+                Estado
+                <select value={status} onChange={(e) => setStatus(e.target.value)}>
+                    {STATUSES.map((s) => (
+                        <option key={s} value={s}>
+                            {s}
+                        </option>
+                    ))}
+                </select>
+            </label>
 
-            <section>
-                <h3>Animal {caseItem.animalCode}</h3>
-                {animal.isPending && <p>Cargando...</p>}
-                {animal.isError && <ErrorMessage error={animal.error} />}
+            {isPending && <p>Cargando...</p>}
+            {isError && <ErrorMessage error={error} />}
+            {data && data.length === 0 && <p>No hay casos con este estado</p>}
 
-                {animal.data && (
-                    <ul>
-                        {Object.entries(animal.data).map(([key, value]) => (
-                            <li key={key}>
-                                <strong>{key}:</strong> {String(value)}
-                            </li>
-                        ))}
-                    </ul>
-                )}
-
-                {eligibility.data && (
-                    <p>
-                        Puede recibir tratamiento:{' '}
-                        <span className={eligibility.data.eligible ? 'ok' : 'bad'}>
-              {eligibility.data.eligible ? 'Sí' : 'No'}
-            </span>
-                    </p>
-                )}
-            </section>
-
-            <TreatmentList query={treatments} />
-
-            <TreatmentForm key={caseItem.animalCode} animalCode={caseItem.animalCode} />
-        </div>
+            {data?.map((c) => (
+                <button
+                    key={c.caseCode}
+                    className={`case-item ${selected?.caseCode === c.caseCode ? 'active' : ''}`}
+                    onClick={() => onSelect(c)}
+                >
+                    <strong>{c.caseCode}</strong> — {c.rescueLocation}
+                    <br />
+                    <small>{c.rescueDate}</small>
+                </button>
+            ))}
+        </aside>
     )
 }
